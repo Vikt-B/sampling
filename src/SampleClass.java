@@ -139,6 +139,10 @@ class Measurement {
 
     @Override
     public String toString() {
+        //for more to unit test
+        if (Objects.isNull(measurementTime) || Objects.isNull(type) || Objects.isNull(measurementValue)){
+            return "";
+        }
         return measurementTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) + "," +
                 type + "," +
                  measurementValue;

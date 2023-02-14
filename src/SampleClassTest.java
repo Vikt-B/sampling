@@ -1,7 +1,9 @@
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Dictionary;
@@ -87,4 +89,79 @@ class SampleClassTest {
                 });
         assertEquals("Measurements not found" ,exception.getMessage());
     }
+
+    @Test
+    void testMeasurementConstructor(){
+        LocalDateTime localDateTime = LocalDateTime.now();
+        MeasurementType type = MeasurementType.HR;
+        Double doubleValue = 35.01;
+        Measurement measurement = new Measurement(localDateTime, type, doubleValue);
+        assertEquals(measurement.getMeasurementTime(), localDateTime);
+        assertEquals(measurement.getType(), type);
+        assertEquals(measurement.getMeasurementValue(), doubleValue);
+    }
+
+    @Test
+    void testMeasurementEquals(){
+        LocalDateTime localDateTime = LocalDateTime.now();
+        MeasurementType type = MeasurementType.HR;
+        Double doubleValue = 35.01;
+        Measurement firstMeasurement = new Measurement(localDateTime, type, doubleValue);
+
+        Measurement secondMeasurement = new Measurement(localDateTime, type, doubleValue);
+        secondMeasurement.setMeasurementTime(LocalDateTime.now().minusSeconds(1));
+
+        Measurement thirdMeasurement = new Measurement(localDateTime, type, doubleValue);
+
+        assertEquals(firstMeasurement, thirdMeasurement);
+        assertNotEquals(firstMeasurement, secondMeasurement);
+
+        Measurement fourthMeasurement = secondMeasurement;
+        fourthMeasurement.setType(MeasurementType.SPO2);
+
+        assertEquals(secondMeasurement, fourthMeasurement);
+
+        Measurement fifthMeasurement = new Measurement(fourthMeasurement.getMeasurementTime(),
+                fourthMeasurement.getType(),
+                fourthMeasurement.getMeasurementValue());
+        fourthMeasurement.setType(MeasurementType.HR);
+        assertNotEquals(fourthMeasurement, fifthMeasurement);
+    }
+
+    @Test
+    void testMeasurementToString(){
+        LocalDateTime localDateTime = LocalDateTime.now();
+        MeasurementType type = MeasurementType.HR;
+        Double doubleValue = 35.01;
+        Measurement firstMeasurement = new Measurement(localDateTime, type, doubleValue);
+        String expectedString = localDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) + "," +
+                type + "," +
+                doubleValue;
+
+        assertEquals(firstMeasurement.toString(),  expectedString);
+
+        firstMeasurement.setMeasurementTime(LocalDateTime.now());
+        assertNotEquals(firstMeasurement.toString(),  expectedString);
+    }
+
+    //would test IF: would be using setters or had custom logic, validations is setters
+    @Test
+    void testMeasurementToStringIfNull(){
+        LocalDateTime localDateTime = LocalDateTime.now();
+        MeasurementType type = MeasurementType.HR;
+        Double doubleValue = 35.01;
+        Measurement firstMeasurement = new Measurement(localDateTime, type, doubleValue);
+
+        firstMeasurement.setMeasurementTime(null);
+        assertEquals(firstMeasurement.toString(), "");
+
+        firstMeasurement.setMeasurementTime(localDateTime);
+        firstMeasurement.setType(null);
+        assertEquals(firstMeasurement.toString(), "");
+
+        firstMeasurement.setType(MeasurementType.HR);
+        firstMeasurement.setMeasurementValue(null);
+        assertEquals(firstMeasurement.toString(), "");
+    }
+
 }
