@@ -140,7 +140,7 @@ class SampleClassTest {
 
         assertEquals(firstMeasurement.toString(),  expectedString);
 
-        firstMeasurement.setMeasurementTime(LocalDateTime.now());
+        firstMeasurement.setMeasurementTime(LocalDateTime.now().minusSeconds(1));
         assertNotEquals(firstMeasurement.toString(),  expectedString);
     }
 
